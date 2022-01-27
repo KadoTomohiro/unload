@@ -6,24 +6,49 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        dl{
+            margin-left: 2em;
+            margin-bottom: 0.5em;
+        }
+        dt {
+            margin-left: 1em;
+        }
+    </style>
 </head>
 <body>
 <section id="前回終了日時">
     <h5>前回終了日時</h5>
 </section>
 <script>
+    const storages = ['localStorage', 'sessionStorage']
     const eventNames = ['beforeunload', 'unload']
 
     const lastCloseSection = document.querySelector('#前回終了日時')
+    for (let storageName of storages) {
+        const storage = getStorage(storageName)
+        const dl = create('dl', storageName, storageName)
+        for (let eventName of eventNames) {
+            console.log(eventName)
+            const dt = create('dt', '', eventName)
+            const dd = create('dd', `${storageName}-${eventName}`, storage.getItem(eventName))
+            dl.appendChild(dt)
+            dl.appendChild(dd)
+            window.addEventListener(eventName, () => storage.setItem(eventName, new Date().toLocaleString()))
+        }
+        lastCloseSection.appendChild(dl)
 
-    for (let eventName of eventNames) {
-        const paragraph = document.createElement('p')
-        const span = document.createElement('span', {})
-        span.id = eventName
-        paragraph.appendChild(span)
-        lastCloseSection.appendChild(paragraph)
-        document.querySelector(`#${eventName}`).textContent = localStorage.getItem(eventName)
-        window.addEventListener(eventName, () => localStorage.setItem(eventName, new Date().toLocaleString()))
+    }
+
+    function getStorage(name) {
+        return window[name]
+    }
+
+    function create(elementName, id, content) {
+        const element = document.createElement(elementName)
+        if (id) element.id = id
+        if (content) element.textContent = content
+        return element
     }
 
 </script>
