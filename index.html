@@ -20,16 +20,18 @@
 <section id="前回終了日時">
     <h5>前回終了日時</h5>
 </section>
+<button id="reload">値を更新</button>
 <script>
     const storages = ['localStorage', 'sessionStorage']
-    const eventNames = ['beforeunload', 'unload', ' visibilitychange','pagehide']
+    const eventNames = ['beforeunload', 'unload', 'visibilitychange','pagehide']
 
     const lastCloseSection = document.querySelector('#前回終了日時')
+    const reloadButton = document.querySelector('#reload')
+
     for (let storageName of storages) {
         const storage = getStorage(storageName)
         const dl = create('dl', storageName, storageName)
         for (let eventName of eventNames) {
-            console.log(eventName)
             const dt = create('dt', '', eventName)
             const dd = create('dd', `${storageName}-${eventName}`, storage.getItem(eventName))
             dl.appendChild(dt)
@@ -37,8 +39,9 @@
             window.addEventListener(eventName, () => storage.setItem(eventName, new Date().toLocaleString()))
         }
         lastCloseSection.appendChild(dl)
-
     }
+
+    reloadButton.addEventListener('click', reload)
 
     function getStorage(name) {
         return window[name]
@@ -49,6 +52,17 @@
         if (id) element.id = id
         if (content) element.textContent = content
         return element
+    }
+
+    function reload() {
+        for (let storageName of storages) {
+            console.log(storageName)
+            for (let eventName of eventNames) {
+                console.log(eventName)
+                document.querySelector(`#${storageName}-${eventName}`).textContent =
+                    getStorage(storageName).getItem(eventName)
+            }
+        }
     }
 
 </script>
