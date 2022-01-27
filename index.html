@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<section id="前回終了日時">
+    <h5>前回終了日時</h5>
+</section>
+<script>
+    const eventNames = ['beforeunload', 'unload']
+
+    const lastCloseSection = document.querySelector('#前回終了日時')
+
+    for (let eventName of eventNames) {
+        const paragraph = document.createElement('p')
+        const span = document.createElement('span', {})
+        span.id = eventName
+        paragraph.appendChild(span)
+        lastCloseSection.appendChild(paragraph)
+        document.querySelector(`#${eventName}`).textContent = localStorage.getItem(eventName)
+        window.addEventListener(eventName, () => localStorage.setItem(eventName, new Date().toLocaleString()))
+    }
+
+</script>
+</body>
+</html>
